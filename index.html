@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Boreal Café – 351 Water St, St. John's NL</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --espresso:#1a0d05;--dark:#120a03;--roast:#2e1a0a;
+  --amber:#C07D3A;--caramel:#D4954A;--latte:#E8C49A;
+  --cream:#F5EAD5;--milk:#FDF6EC;
+  --text-light:rgba(245,234,213,0.85);--text-dim:rgba(232,196,154,0.55);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--dark);color:var(--cream);overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:var(--amber);border-radius:2px}
+
+/* CURSOR */
+.cursor{position:fixed;width:14px;height:14px;border-radius:50%;background:var(--caramel);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s;mix-blend-mode:difference}
+.cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--caramel);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s;opacity:.6}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:1000;padding:26px 60px;display:flex;align-items:center;justify-content:space-between;transition:all .6s ease}
+nav.scrolled{background:rgba(18,10,3,.96);backdrop-filter:blur(20px);padding:16px 60px;border-bottom:1px solid rgba(192,125,58,.12)}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--cream);letter-spacing:2px;text-decoration:none}
+.nav-logo em{color:var(--caramel);font-style:italic}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color .3s;font-weight:500}
+.nav-links a:hover{color:var(--latte)}
+.nav-cta{padding:11px 28px;border:1px solid var(--amber);color:var(--amber);background:transparent;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .35s}
+.nav-cta:hover{background:var(--amber);color:var(--dark)}
+
+/* HERO */
+#hero{position:relative;width:100%;height:100vh;overflow:hidden;display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center;transform:scale(1.08)}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,rgba(18,10,3,.92) 0%,rgba(18,10,3,.68) 45%,rgba(18,10,3,.22) 100%)}
+#hero-canvas{position:absolute;inset:0;z-index:1;pointer-events:none}
+.hero-content{position:relative;z-index:2;padding:0 60px;max-width:680px}
+.hero-eyebrow{font-size:.68rem;letter-spacing:5px;text-transform:uppercase;color:var(--caramel);margin-bottom:20px;opacity:0;animation:fadeUp .8s .3s forwards;display:flex;align-items:center;gap:14px}
+.hero-eyebrow::before{content:'';width:36px;height:1px;background:var(--amber)}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(3.8rem,9vw,8.5rem);font-weight:900;line-height:.92;letter-spacing:-2px;color:#fff;opacity:0;animation:fadeUp 1s .5s forwards}
+.hero-title em{display:block;font-style:italic;font-weight:400;color:var(--caramel);font-size:.65em}
+.hero-desc{font-size:.98rem;font-weight:300;color:var(--text-light);line-height:1.85;margin-top:24px;max-width:420px;opacity:0;animation:fadeUp .9s .8s forwards;letter-spacing:.5px}
+.hero-actions{display:flex;gap:16px;margin-top:36px;opacity:0;animation:fadeUp .9s 1s forwards;flex-wrap:wrap}
+.btn-amber{padding:15px 44px;background:var(--amber);color:#fff;border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;transition:all .35s;font-weight:500;box-shadow:0 8px 32px rgba(192,125,58,.45)}
+.btn-amber:hover{background:var(--caramel);transform:translateY(-3px);box-shadow:0 14px 42px rgba(212,149,74,.55)}
+.btn-ghost{padding:14px 44px;background:transparent;color:var(--cream);border:1px solid rgba(245,234,213,.3);cursor:pointer;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;transition:all .35s;font-weight:300}
+.btn-ghost:hover{border-color:var(--latte);color:var(--latte)}
+.hero-cup-wrap{position:absolute;right:5%;top:50%;transform:translateY(-50%);z-index:2;width:min(500px,44vw);pointer-events:none}
+.hero-cup-wrap img{width:100%;border-radius:4px;max-height:580px;object-fit:cover;filter:drop-shadow(0 40px 80px rgba(192,125,58,.45));animation:cupFloat 4s ease-in-out infinite}
+.hero-scroll{position:absolute;bottom:40px;left:60px;z-index:3;display:flex;align-items:center;gap:12px;opacity:0;animation:fadeUp .8s 1.4s forwards}
+.hero-scroll span{font-size:.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim)}
+.scroll-bar{width:48px;height:1px;background:rgba(232,196,154,.3);position:relative;overflow:hidden}
+.scroll-bar::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--amber);animation:scrollSlide 2.2s infinite}
+.hero-info{position:absolute;right:60px;bottom:40px;z-index:3;text-align:right;opacity:0;animation:fadeUp .8s 1.2s forwards}
+.hero-info p{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px}
+.hero-info strong{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--latte)}
+
+/* POUR CANVAS */
+#pour-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9}
+.pour-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9997;overflow:hidden}
+.pour-drop{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(192,125,58,.8),rgba(44,26,14,.9));pointer-events:none;animation:pourDrop linear forwards}
+
+/* MARQUEE */
+.marquee{background:var(--amber);padding:14px 0;overflow:hidden}
+.marquee-inner{display:flex;width:max-content;animation:marqueeRun 18s linear infinite}
+.marquee-item{font-size:.7rem;letter-spacing:3.5px;text-transform:uppercase;color:var(--dark);padding:0 32px;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:10px}
+.marquee-item::after{content:'✦';font-size:.5rem}
+
+/* SECTION SHARED */
+section{position:relative}
+.sec-label{font-size:.64rem;letter-spacing:5px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;font-weight:500;display:flex;align-items:center;gap:12px}
+.sec-label::before{content:'';width:28px;height:1px;background:var(--amber)}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:700;line-height:1.1;color:var(--cream)}
+.sec-title em{color:var(--caramel);font-style:italic}
+.amber-rule{width:48px;height:2px;background:linear-gradient(to right,var(--amber),var(--caramel));margin:20px 0 32px;border-radius:2px}
+
+/* ABOUT */
+#about{background:var(--espresso);padding:120px 60px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;overflow:hidden}
+.about-visual{position:relative;height:560px}
+.av-main{width:100%;height:100%;border-radius:4px;overflow:hidden}
+.av-main img{width:100%;height:100%;object-fit:cover;transition:transform .8s}
+.av-main:hover img{transform:scale(1.04)}
+.av-float{position:absolute;bottom:-28px;right:-28px;width:220px;height:220px;border-radius:4px;overflow:hidden;border:4px solid var(--espresso);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.av-float img{width:100%;height:100%;object-fit:cover}
+.av-badge{position:absolute;top:28px;left:-16px;background:var(--amber);color:#fff;padding:14px 20px;writing-mode:vertical-lr;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;font-weight:600}
+.about-text p{font-size:.96rem;line-height:1.95;color:rgba(245,234,213,.7);margin-bottom:16px}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+.feat{padding:20px;border:1px solid rgba(192,125,58,.18);border-radius:4px;background:rgba(192,125,58,.05);transition:all .4s;cursor:default}
+.feat:hover{border-color:var(--amber);background:rgba(192,125,58,.1);transform:translateY(-4px)}
+.feat-icon{font-size:1.6rem;margin-bottom:10px}
+.feat-title{font-weight:600;font-size:.88rem;margin-bottom:4px;color:var(--cream)}
+.feat-desc{font-size:.76rem;color:var(--text-dim);line-height:1.6}
+
+/* PRODUCT SLIDES */
+#products{background:var(--dark);overflow:hidden}
+.products-header{padding:100px 60px 0;text-align:center}
+.products-header .amber-rule{margin:20px auto 0}
+.product-scroll-hint{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-top:16px}
+.product-track{display:flex;overflow:hidden;margin-top:60px;position:relative}
+.product-slide{flex:0 0 100%;height:85vh;position:relative;overflow:hidden;display:none}
+.product-slide.active{display:block}
+.product-slide img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+.product-slide.active img{transform:scale(1)}
+.product-slide::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(18,10,3,.9) 0%,rgba(18,10,3,.4) 50%,rgba(18,10,3,.08) 100%)}
+.slide-content{position:absolute;bottom:80px;left:60px;z-index:2}
+.slide-tag{font-size:.62rem;letter-spacing:4px;text-transform:uppercase;color:var(--amber);margin-bottom:12px}
+.slide-name{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,6vw,5.5rem);font-weight:900;line-height:.95;color:#fff}
+.slide-name em{font-style:italic;font-weight:400;color:var(--caramel)}
+.slide-desc{font-size:.9rem;color:var(--text-light);margin-top:14px;font-weight:300;letter-spacing:.5px;max-width:360px}
+.slide-price{margin-top:20px;font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--latte)}
+.slide-counter{position:absolute;top:40px;right:60px;z-index:2;font-family:'Playfair Display',serif;font-size:4rem;font-weight:900;color:rgba(192,125,58,.1);line-height:1;pointer-events:none}
+.slide-nav-row{display:flex;justify-content:space-between;align-items:center;padding:20px 60px}
+.slide-arrows{display:flex;gap:10px}
+.slide-arrow{width:48px;height:48px;border:1px solid rgba(192,125,58,.35);background:transparent;color:var(--latte);cursor:pointer;font-size:1.2rem;border-radius:50%;transition:all .3s}
+.slide-arrow:hover{background:var(--amber);border-color:var(--amber)}
+.slide-dots{display:flex;gap:10px}
+.slide-dot{width:8px;height:8px;border-radius:50%;background:rgba(232,196,154,.3);cursor:pointer;transition:all .4s}
+.slide-dot.active{background:var(--amber);transform:scale(1.3)}
+.product-progress{height:2px;background:rgba(192,125,58,.15)}
+.product-progress-bar{height:100%;background:var(--amber);width:0%;transition:width .05s linear}
+
+/* MENU */
+#menu{background:var(--roast);padding:120px 60px}
+.menu-header{text-align:center;margin-bottom:70px}
+.menu-header .amber-rule{margin:20px auto 0}
+.menu-cats{display:flex;justify-content:center;gap:6px;margin-top:32px;flex-wrap:wrap}
+.cat-btn{padding:9px 24px;border:1px solid rgba(192,125,58,.28);background:transparent;color:rgba(232,196,154,.6);font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:30px;transition:all .3s;font-weight:500}
+.cat-btn.on,.cat-btn:hover{background:var(--amber);color:#fff;border-color:transparent;box-shadow:0 4px 18px rgba(192,125,58,.4)}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:2px;max-width:1280px;margin:0 auto}
+.m-card{background:var(--espresso);overflow:hidden;position:relative;cursor:default;opacity:0;transform:translateX(-80px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1),scale .5s}
+.m-card.show{opacity:1;transform:translateX(0)}
+.m-card:hover{transform:translateX(0) scale(1.02);z-index:2}
+.m-card-img{height:220px;overflow:hidden;position:relative}
+.m-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.m-card:hover .m-card-img img{transform:scale(1.1)}
+.m-card-img-fb{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem}
+.m-card-ribbon{position:absolute;top:16px;left:0;background:var(--amber);color:#fff;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;font-weight:700;clip-path:polygon(0 0,100% 0,88% 100%,0 100%)}
+.m-card-body{padding:24px}
+.m-card-name{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--cream);margin-bottom:8px}
+.m-card-desc{font-size:.79rem;color:var(--text-dim);line-height:1.65;margin-bottom:16px}
+.m-card-foot{display:flex;align-items:center;justify-content:space-between}
+.m-card-price{font-family:'Playfair Display',serif;font-size:1.18rem;color:var(--caramel);font-weight:700}
+.m-card-tag{font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border:1px solid rgba(192,125,58,.3);color:var(--amber);border-radius:20px}
+
+/* BEANS SECTION */
+#beans-section{height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.beans-bg{position:absolute;inset:0}
+.beans-bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.2)}
+.beans-bg::after{content:'';position:absolute;inset:0;background:rgba(18,10,3,.72)}
+#beans-canvas{position:absolute;inset:0;z-index:1}
+.beans-text{position:relative;z-index:2;text-align:center;max-width:700px;padding:0 30px}
+.beans-quote{font-family:'Playfair Display',serif;font-size:clamp(1.1rem,2.5vw,1.55rem);font-style:italic;color:var(--latte);margin-top:24px;line-height:1.7;opacity:.85}
+
+/* REVIEWS */
+#reviews{background:var(--espresso);padding:120px 60px}
+.reviews-header{text-align:center;margin-bottom:60px}
+.reviews-header .amber-rule{margin:20px auto 0}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;max-width:1100px;margin:0 auto}
+.review-card{padding:36px;border:1px solid rgba(192,125,58,.14);background:rgba(192,125,58,.04);transition:all .45s;position:relative;overflow:hidden}
+.review-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--amber);transition:height .5s}
+.review-card:hover{border-color:rgba(192,125,58,.35);transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.review-card:hover::before{height:100%}
+.review-stars{color:var(--caramel);font-size:.95rem;letter-spacing:2px;margin-bottom:16px}
+.review-text{font-family:'Playfair Display',serif;font-size:1.05rem;font-style:italic;color:var(--cream);line-height:1.85;margin-bottom:22px;opacity:.9}
+.review-author{display:flex;align-items:center;gap:12px}
+.review-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--caramel));display:flex;align-items:center;justify-content:center;font-size:1rem}
+.review-name{font-weight:600;font-size:.85rem;color:var(--cream)}
+.review-meta{font-size:.72rem;color:var(--text-dim)}
+
+/* GALLERY */
+#gallery{padding:0}
+.gallery-header{padding:100px 60px 60px;text-align:center;background:var(--roast)}
+.gallery-header .amber-rule{margin:20px auto 0}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:300px 300px;gap:3px}
+.g-item{overflow:hidden;position:relative;cursor:pointer}
+.g-item img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.g-item:hover img{transform:scale(1.08)}
+.g-item:nth-child(1){grid-column:span 2}
+.g-item:nth-child(5){grid-column:span 2}
+.g-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(18,10,3,.8),transparent);opacity:0;transition:opacity .4s;display:flex;align-items:flex-end;padding:24px}
+.g-item:hover .g-overlay{opacity:1}
+.g-caption{font-family:'Playfair Display',serif;font-size:1rem;color:#fff;font-style:italic;transform:translateY(10px);transition:transform .4s}
+.g-item:hover .g-caption{transform:translateY(0)}
+
+/* VISIT */
+#visit{background:var(--dark);padding:120px 60px;display:grid;grid-template-columns:1fr 1fr;gap:80px}
+.hours-table{width:100%;border-collapse:collapse;margin-top:12px}
+.hours-table tr{border-bottom:1px solid rgba(192,125,58,.1)}
+.hours-table td{padding:16px 0;font-size:.9rem}
+.hours-table td:first-child{color:var(--text-dim)}
+.hours-table td:last-child{color:var(--cream);font-weight:500;text-align:right}
+.hours-table tr.today td{color:var(--caramel);font-weight:700}
+.hours-table tr.today td:first-child::after{content:' \2190 Today';font-size:.65rem;color:var(--amber);font-weight:400}
+.v-info-card{display:flex;gap:16px;align-items:flex-start;padding:20px 22px;border:1px solid rgba(192,125,58,.16);background:rgba(192,125,58,.04);margin-bottom:14px;transition:all .35s}
+.v-info-card:hover{border-color:var(--amber);background:rgba(192,125,58,.08);transform:translateX(6px)}
+.v-info-icon{font-size:1.3rem;flex-shrink:0}
+.v-info-label{font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--amber);margin-bottom:5px;font-weight:600}
+.v-info-val{font-size:.9rem;color:var(--cream);line-height:1.6}
+.v-info-val a{color:var(--caramel);text-decoration:none}
+.v-info-val a:hover{color:var(--latte)}
+.map-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:18px;background:linear-gradient(135deg,#4A7C59,#6BA583);color:#fff;border:none;border-radius:2px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.75rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:600;text-decoration:none;transition:all .35s;box-shadow:0 6px 24px rgba(74,124,89,.3);margin-top:18px;display:flex}
+.map-btn:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(74,124,89,.5)}
+
+/* RESERVE */
+#reserve{background:var(--roast);padding:120px 60px;display:grid;grid-template-columns:1fr 1fr;gap:80px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:.65rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;font-weight:500}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:14px 18px;border:1px solid rgba(192,125,58,.22);background:rgba(192,125,58,.04);font-family:'Jost',sans-serif;font-size:.9rem;color:var(--cream);transition:all .3s;outline:none}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--amber);background:rgba(192,125,58,.08)}
+.form-group select option{background:var(--roast);color:var(--cream)}
+.form-group textarea{height:110px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.submit-btn{width:100%;padding:16px;background:var(--amber);color:#fff;border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:600;transition:all .35s;box-shadow:0 6px 24px rgba(192,125,58,.4)}
+.submit-btn:hover{background:var(--caramel);transform:translateY(-2px)}
+
+/* FOOTER */
+footer{background:var(--dark);padding:70px 60px 30px;border-top:1px solid rgba(192,125,58,.1)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:50px;margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid rgba(192,125,58,.08)}
+.footer-brand{font-family:'Playfair Display',serif;font-size:2rem;color:var(--cream);margin-bottom:14px}
+.footer-brand em{color:var(--caramel);font-style:italic}
+.footer-desc{font-size:.82rem;color:rgba(232,196,154,.35);line-height:1.9}
+.footer-col-title{font-size:.64rem;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:18px;font-weight:600}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:11px}
+.footer-links a{font-size:.81rem;color:rgba(232,196,154,.36);text-decoration:none;transition:color .3s}
+.footer-links a:hover{color:var(--latte)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.footer-copy{font-size:.72rem;color:rgba(232,196,154,.2)}
+.footer-socials{display:flex;gap:12px}
+.soc{width:36px;height:36px;border-radius:50%;border:1px solid rgba(192,125,58,.22);display:flex;align-items:center;justify-content:center;color:rgba(232,196,154,.38);font-size:.8rem;text-decoration:none;transition:all .3s}
+.soc:hover{border-color:var(--amber);color:var(--amber)}
+
+/* SCROLL REVEAL */
+.fade-up{opacity:0;transform:translateY(50px);transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1)}
+.fade-up.show{opacity:1;transform:translateY(0)}
+.fade-left{opacity:0;transform:translateX(-60px);transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1)}
+.fade-left.show{opacity:1;transform:translateX(0)}
+.fade-right{opacity:0;transform:translateX(60px);transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1)}
+.fade-right.show{opacity:1;transform:translateX(0)}
+.fade-scale{opacity:0;transform:scale(.88);transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1)}
+.fade-scale.show{opacity:1;transform:scale(1)}
+
+/* KEYFRAMES */
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+@keyframes scrollSlide{0%{left:-100%}100%{left:100%}}
+@keyframes marqueeRun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes cupFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes pourDrop{0%{transform:scale(0);opacity:.8}100%{transform:scale(5);opacity:0}}
+
+@media(max-width:960px){
+  #about,#visit,#reserve{grid-template-columns:1fr!important;padding:80px 28px!important}
+  nav,nav.scrolled{padding:14px 22px}
+  .nav-links,.nav-cta{display:none}
+  .hero-content{padding:0 28px}
+  .hero-cup-wrap{display:none}
+  .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .g-item:nth-child(1),.g-item:nth-child(5){grid-column:span 1}
+  .footer-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .products-header{padding:80px 28px 0}
+  .slide-content{left:28px;bottom:60px}
+  .slide-nav-row{padding:16px 28px}
+  #menu,#reviews,#gallery .gallery-header,#beans-section,footer{padding-left:28px!important;padding-right:28px!important}
+}
+</style>
+</head>
+<body>
+
+<canvas id="pour-canvas"></canvas>
+<div class="pour-overlay" id="pour-overlay"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Boreal <em>Café</em></a>
+  <ul class="nav-links">
+    <li><a href="#about">Story</a></li>
+    <li><a href="#products">Drinks</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#visit">Visit</a></li>
+  </ul>
+  <a href="#reserve" class="nav-cta">Book Table</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1600&q=85" alt="Coffee" id="hero-bg-img"/>
+  </div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-eyebrow">351 Water Street · St. John's NL</div>
+    <h1 class="hero-title">Boreal<em>Café</em></h1>
+    <p class="hero-desc">Where every cup tells a story — artisan coffee, locally sourced, crafted with love in the heart of downtown St. John's, Newfoundland.</p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-amber">Explore Menu</a>
+      <a href="#visit" class="btn-ghost">Find Us</a>
+    </div>
+  </div>
+  <div class="hero-cup-wrap" id="hero-cup">
+    <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=700&q=85" alt="Coffee cup"/>
+  </div>
+  <div class="hero-scroll"><span>Scroll to explore</span><div class="scroll-bar"></div></div>
+  <div class="hero-info"><p>Open from</p><strong>7:30 AM Daily</strong></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-inner">
+    <span class="marquee-item">Artisan Coffee</span><span class="marquee-item">Locally Sourced</span>
+    <span class="marquee-item">351 Water Street</span><span class="marquee-item">Freshly Baked</span>
+    <span class="marquee-item">St. John's NL</span><span class="marquee-item">Open 7:30 AM</span>
+    <span class="marquee-item">Nitro Cold Brew</span><span class="marquee-item">Boreal Café</span>
+    <span class="marquee-item">Artisan Coffee</span><span class="marquee-item">Locally Sourced</span>
+    <span class="marquee-item">351 Water Street</span><span class="marquee-item">Freshly Baked</span>
+    <span class="marquee-item">St. John's NL</span><span class="marquee-item">Open 7:30 AM</span>
+    <span class="marquee-item">Nitro Cold Brew</span><span class="marquee-item">Boreal Café</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-visual fade-left">
+    <div class="av-main"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=85" alt="Café interior"/></div>
+    <div class="av-float"><img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400&q=85" alt="Latte art"/></div>
+    <div class="av-badge">Since 2024</div>
+  </div>
+  <div class="fade-right" style="padding-top:20px">
+    <div class="sec-label">Our Story</div>
+    <h2 class="sec-title">A Warm Corner<br>on <em>Water Street</em></h2>
+    <div class="amber-rule"></div>
+    <p>Nestled in the heart of downtown St. John's, Boreal Café is your sanctuary from the Atlantic chill — a warm, inviting space where great coffee meets genuine Newfoundland hospitality.</p>
+    <p>We believe in quality you can taste: locally sourced ingredients, artisan brewing techniques, and pastries baked fresh every single morning.</p>
+    <div class="feat-grid">
+      <div class="feat fade-up"><div class="feat-icon">🌿</div><div class="feat-title">Locally Sourced</div><div class="feat-desc">Supporting Newfoundland producers daily</div></div>
+      <div class="feat fade-up"><div class="feat-icon">☕</div><div class="feat-title">Artisan Coffee</div><div class="feat-desc">Expert baristas & specialty blends</div></div>
+      <div class="feat fade-up"><div class="feat-icon">🥐</div><div class="feat-title">Baked Fresh Daily</div><div class="feat-desc">Pastries made every morning in-house</div></div>
+      <div class="feat fade-up"><div class="feat-icon">📍</div><div class="feat-title">Downtown Heart</div><div class="feat-desc">Iconic Water St — soul of St. John's</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT SLIDES -->
+<section id="products">
+  <div class="products-header fade-up">
+    <div class="sec-label" style="justify-content:center">Signature Drinks</div>
+    <h2 class="sec-title">Crafted with <em>Passion</em></h2>
+    <div class="amber-rule"></div>
+    <p class="product-scroll-hint">— Our signature collection —</p>
+  </div>
+  <div class="product-track">
+    <div class="product-slide active" data-index="0">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1400&q=85" alt="Espresso"/>
+      <div class="slide-counter">01</div>
+      <div class="slide-content">
+        <div class="slide-tag">Dark Roast</div>
+        <div class="slide-name">Dark<em>Espresso</em></div>
+        <div class="slide-desc">Intense, unforgettable. Bold, rich, and perfectly extracted every time.</div>
+        <div class="slide-price">$3.00</div>
+      </div>
+    </div>
+    <div class="product-slide" data-index="1">
+      <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=1400&q=85" alt="Latte"/>
+      <div class="slide-counter">02</div>
+      <div class="slide-content">
+        <div class="slide-tag">Signature Blend</div>
+        <div class="slide-name">Hazelnut<em>Latte</em></div>
+        <div class="slide-desc">Warm, comforting. Velvety espresso meets steamed milk with a hazelnut kiss.</div>
+        <div class="slide-price">$4.40</div>
+      </div>
+    </div>
+    <div class="product-slide" data-index="2">
+      <img src="https://images.unsplash.com/photo-1599481238640-4c1288750d7a?w=1400&q=85" alt="Cold Brew"/>
+      <div class="slide-counter">03</div>
+      <div class="slide-content">
+        <div class="slide-tag">Premium Cold</div>
+        <div class="slide-name">Nitro<em>Cold Brew</em></div>
+        <div class="slide-desc">Smooth, silky, cascading. Nitrogen-infused cold brew — a glass of pure magic.</div>
+        <div class="slide-price">$4.80</div>
+      </div>
+    </div>
+    <div class="product-slide" data-index="3">
+      <img src="https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=1400&q=85" alt="Matcha"/>
+      <div class="slide-counter">04</div>
+      <div class="slide-content">
+        <div class="slide-tag">Ceremonial Grade</div>
+        <div class="slide-name">Matcha<em>Latte</em></div>
+        <div class="slide-desc">Earthy, bright, smooth. Ceremonial-grade matcha with steamed oat milk.</div>
+        <div class="slide-price">$3.90</div>
+      </div>
+    </div>
+  </div>
+  <div class="product-progress"><div class="product-progress-bar" id="prod-progress"></div></div>
+  <div class="slide-nav-row">
+    <div class="slide-arrows">
+      <button class="slide-arrow" onclick="changeSlide(-1)">&#8249;</button>
+      <button class="slide-arrow" onclick="changeSlide(1)">&#8250;</button>
+    </div>
+    <div class="slide-dots" id="slide-dots">
+      <div class="slide-dot active" onclick="goSlide(0)"></div>
+      <div class="slide-dot" onclick="goSlide(1)"></div>
+      <div class="slide-dot" onclick="goSlide(2)"></div>
+      <div class="slide-dot" onclick="goSlide(3)"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="menu-header fade-up">
+    <div class="sec-label" style="justify-content:center">What We Serve</div>
+    <h2 class="sec-title">The <em>Boreal</em> Menu</h2>
+    <div class="amber-rule"></div>
+    <div class="menu-cats">
+      <button class="cat-btn on" onclick="filterCat('all',this)">All</button>
+      <button class="cat-btn" onclick="filterCat('food',this)">🍽️ Food</button>
+      <button class="cat-btn" onclick="filterCat('coffee',this)">☕ Coffee</button>
+      <button class="cat-btn" onclick="filterCat('cold',this)">🧊 Cold Brew</button>
+      <button class="cat-btn" onclick="filterCat('tea',this)">🍵 Tea</button>
+      <button class="cat-btn" onclick="filterCat('pastry',this)">🥐 Pastries</button>
+    </div>
+  </div>
+  <div class="menu-grid" id="menu-grid">
+    <div class="m-card" data-cat="food"><div class="m-card-img"><img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&q=80" alt="French Toast"/><div class="m-card-ribbon">⭐ Fan Fave</div></div><div class="m-card-body"><div class="m-card-name">French Toast</div><div class="m-card-desc">Golden-crisp French toast with strawberries, whipped cream & chocolate drizzle.</div><div class="m-card-foot"><span class="m-card-price">Ask Inside</span><span class="m-card-tag">Fresh Daily</span></div></div></div>
+    <div class="m-card" data-cat="food"><div class="m-card-img"><img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=80" alt="Toast"/><div class="m-card-ribbon">⭐ Must Try</div></div><div class="m-card-body"><div class="m-card-name">Boreal Toast Plate</div><div class="m-card-desc">Thick-cut toast with butter, house preserves & lemon cream — simple perfection.</div><div class="m-card-foot"><span class="m-card-price">Ask Inside</span><span class="m-card-tag">Comfort</span></div></div></div>
+    <div class="m-card" data-cat="food"><div class="m-card-img"><img src="https://images.unsplash.com/photo-1517673408408-e174f25e1999?w=600&q=80" alt="Oat Bowl"/><div class="m-card-ribbon">Healthy</div></div><div class="m-card-body"><div class="m-card-name">Mango Oat Bowl</div><div class="m-card-desc">Creamy steel-cut oats with fresh mango, mint & honey. Wholesome & satisfying.</div><div class="m-card-foot"><span class="m-card-price">Ask Inside</span><span class="m-card-tag">Nutritious</span></div></div></div>
+    <div class="m-card" data-cat="coffee"><div class="m-card-img"><img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=80" alt="Latte"/><div class="m-card-ribbon">Bestseller</div></div><div class="m-card-body"><div class="m-card-name">Signature Latte</div><div class="m-card-desc">Velvety espresso with steamed milk, crowned with handcrafted latte art.</div><div class="m-card-foot"><span class="m-card-price">$4.00</span><span class="m-card-tag">12oz · 16oz</span></div></div></div>
+    <div class="m-card" data-cat="coffee"><div class="m-card-img"><img src="https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=600&q=80" alt="Canadiano"/><div class="m-card-ribbon">⭐ Fan Fave</div></div><div class="m-card-body"><div class="m-card-name">Canadiano</div><div class="m-card-desc">Our signature twist on the classic Americano — beloved by every single regular.</div><div class="m-card-foot"><span class="m-card-price">$2.65</span><span class="m-card-tag">12 or 16oz</span></div></div></div>
+    <div class="m-card" data-cat="coffee"><div class="m-card-img"><img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=600&q=80" alt="Nutella Latte"/><div class="m-card-ribbon">⭐ Must Try</div></div><div class="m-card-body"><div class="m-card-name">Nutella Latte</div><div class="m-card-desc">Rich espresso swirled with creamy Nutella — indulgent, smooth, irresistible.</div><div class="m-card-foot"><span class="m-card-price">$4.40</span><span class="m-card-tag">Indulgent</span></div></div></div>
+    <div class="m-card" data-cat="cold"><div class="m-card-img"><img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=600&q=80" alt="Cold Brew"/><div class="m-card-ribbon">Premium</div></div><div class="m-card-body"><div class="m-card-name">Nitro Cold Brew</div><div class="m-card-desc">Nitrogen-infused cold brew — velvety, creamy, and beautifully cascading.</div><div class="m-card-foot"><span class="m-card-price">$4.80</span><span class="m-card-tag">12oz · 20oz</span></div></div></div>
+    <div class="m-card" data-cat="cold"><div class="m-card-img" style="background:linear-gradient(135deg,#1a2e3a,#2e4a5e)"><div class="m-card-img-fb">🛫</div><div class="m-card-ribbon">Unique</div></div><div class="m-card-body"><div class="m-card-name">Cold Brew Flight</div><div class="m-card-desc">All three cold brews side by side — Cold Brew, Nitro & Flash. The ultimate experience.</div><div class="m-card-foot"><span class="m-card-price">$5.00</span><span class="m-card-tag">Trio</span></div></div></div>
+    <div class="m-card" data-cat="tea"><div class="m-card-img"><img src="https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=600&q=80" alt="Matcha"/><div class="m-card-ribbon">Trending</div></div><div class="m-card-body"><div class="m-card-name">Hot Matcha Latte</div><div class="m-card-desc">Ceremonial-grade matcha with steamed milk — earthy, smooth, vibrant green.</div><div class="m-card-foot"><span class="m-card-price">$3.90</span><span class="m-card-tag">12oz · 16oz</span></div></div></div>
+    <div class="m-card" data-cat="pastry"><div class="m-card-img"><img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&q=80" alt="Pastries"/><div class="m-card-ribbon">Baked Today</div></div><div class="m-card-body"><div class="m-card-name">Artisan Pastry Box</div><div class="m-card-desc">Scones, cookies, bars, donuts & more — baked fresh in-house every morning.</div><div class="m-card-foot"><span class="m-card-price">From $3.50</span><span class="m-card-tag">Daily</span></div></div></div>
+  </div>
+</section>
+
+<!-- BEANS SECTION -->
+<section id="beans-section">
+  <div class="beans-bg"><img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1600&q=85" alt="Coffee beans"/></div>
+  <canvas id="beans-canvas"></canvas>
+  <div class="beans-text fade-up">
+    <div class="sec-label" style="justify-content:center;color:var(--latte)">Masterfully Roasted</div>
+    <h2 class="sec-title">The Perfect <em>Grind</em></h2>
+    <div class="amber-rule" style="margin:20px auto"></div>
+    <p class="beans-quote">"We coax out the hidden flavours of every bean. The heat is our brush, the bean our canvas — witness the transformation from raw potential to aromatic perfection."</p>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="reviews-header fade-up">
+    <div class="sec-label" style="justify-content:center">What Guests Say</div>
+    <h2 class="sec-title">Real <em>Reviews</em></h2>
+    <div class="amber-rule" style="margin:20px auto 0"></div>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card fade-up"><div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="review-text">"The Canadiano was delicious, and the Nutella Latte was excellent! This place is a hidden gem on Water Street."</div><div class="review-author"><div class="review-avatar">😊</div><div><div class="review-name">Local Guest</div><div class="review-meta">Google Review · St. John's NL</div></div></div></div>
+    <div class="review-card fade-up"><div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="review-text">"I stopped in for a flat white and it was absolutely delicious. So cozy — the perfect place to relax after shopping."</div><div class="review-author"><div class="review-avatar">☕</div><div><div class="review-name">Coffee Lover</div><div class="review-meta">Google Review · St. John's NL</div></div></div></div>
+    <div class="review-card fade-up"><div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="review-text">"The turkey dressing sandwich was hands down the best sandwich I've ever had at a café. I'll definitely be back!"</div><div class="review-author"><div class="review-avatar">🥪</div><div><div class="review-name">Food Enthusiast</div><div class="review-meta">Wanderboat · Newfoundland</div></div></div></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" style="padding:0">
+  <div class="gallery-header fade-up">
+    <div class="sec-label" style="justify-content:center">Moments at Boreal</div>
+    <h2 class="sec-title">A Peek <em>Inside</em></h2>
+    <div class="amber-rule" style="margin:20px auto 0"></div>
+  </div>
+  <div class="gallery-grid">
+    <div class="g-item fade-scale"><img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=800&q=85" alt="French Toast"/><div class="g-overlay"><span class="g-caption">Famous French Toast</span></div></div>
+    <div class="g-item fade-scale"><img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=85" alt="Latte"/><div class="g-overlay"><span class="g-caption">Artisan Latte Art</span></div></div>
+    <div class="g-item fade-scale"><img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&q=85" alt="Beans"/><div class="g-overlay"><span class="g-caption">Masterfully Roasted Beans</span></div></div>
+    <div class="g-item fade-scale"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=85" alt="Café"/><div class="g-overlay"><span class="g-caption">Cozy Café Atmosphere</span></div></div>
+    <div class="g-item fade-scale"><img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=85" alt="Pastries"/><div class="g-overlay"><span class="g-caption">Freshly Baked Pastries</span></div></div>
+  </div>
+</section>
+
+<!-- VISIT -->
+<section id="visit">
+  <div class="fade-left">
+    <div class="sec-label">Opening Hours</div>
+    <h2 class="sec-title">When to <em>Visit</em></h2>
+    <div class="amber-rule"></div>
+    <table class="hours-table">
+      <tr><td>Monday</td><td>7:30 AM – 5:00 PM</td></tr>
+      <tr><td>Tuesday</td><td>7:30 AM – 5:00 PM</td></tr>
+      <tr class="today"><td>Wednesday</td><td>7:30 AM – 5:00 PM</td></tr>
+      <tr><td>Thursday</td><td>7:30 AM – 5:00 PM</td></tr>
+      <tr><td>Friday</td><td>7:30 AM – 5:00 PM</td></tr>
+      <tr><td>Saturday</td><td>8:00 AM – 5:00 PM</td></tr>
+      <tr><td>Sunday</td><td>8:00 AM – 4:00 PM</td></tr>
+    </table>
+    <p style="margin-top:16px;font-size:.78rem;color:var(--text-dim)">⚠️ Hours may vary on holidays. Call ahead to confirm.</p>
+  </div>
+  <div class="fade-right">
+    <div class="sec-label">Location & Contact</div>
+    <h2 class="sec-title">Come <em>Find Us</em></h2>
+    <div class="amber-rule"></div>
+    <div class="v-info-card"><div class="v-info-icon">📍</div><div><div class="v-info-label">Address</div><div class="v-info-val">351 Water St, St John's NL A1C 1C2<br>Downtown St. John's, Newfoundland</div></div></div>
+    <div class="v-info-card"><div class="v-info-icon">📞</div><div><div class="v-info-label">Phone</div><div class="v-info-val"><a href="tel:7095524809">(709) 552-4809</a></div></div></div>
+    <div class="v-info-card"><div class="v-info-icon">🚗</div><div><div class="v-info-label">Getting Here</div><div class="v-info-val">Iconic Water Street · Street parking · 5 min walk from harbour</div></div></div>
+    <a href="https://www.google.com/maps/dir/?api=1&destination=351+Water+St,+St+John%27s,+NL+A1C+1C2,+Canada" target="_blank" class="map-btn">🗺️ Get Directions on Google Maps</a>
+    <a href="https://maps.apple.com/?address=351+Water+St,+St+Johns,+NL" target="_blank" class="map-btn" style="margin-top:10px;background:linear-gradient(135deg,#555,#777);box-shadow:0 6px 20px rgba(0,0,0,.25)">🍎 Open in Apple Maps</a>
+  </div>
+</section>
+
+<!-- RESERVE -->
+<section id="reserve">
+  <div class="fade-left">
+    <div class="sec-label">Come On In</div>
+    <h2 class="sec-title">Book a <em>Table</em></h2>
+    <div class="amber-rule"></div>
+    <p style="color:var(--text-dim);font-size:.95rem;line-height:1.9;margin-bottom:28px">Walk-ins are always welcome! For groups or special occasions, send a request and we'll make sure everything is perfect for you.</p>
+    <div class="v-info-card"><div class="v-info-icon">📞</div><div><div class="v-info-label">Call Us</div><div class="v-info-val"><a href="tel:7095524809">(709) 552-4809</a></div></div></div>
+    <div class="v-info-card"><div class="v-info-icon">⏰</div><div><div class="v-info-label">Hours</div><div class="v-info-val">Mon–Fri from 7:30 AM · Weekends from 8:00 AM</div></div></div>
+    <a href="https://www.facebook.com/people/Boreal-Caf%C3%A9/61576568074726/" target="_blank" style="display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,#1877F2,#4293F5);color:#fff;text-decoration:none;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600">📘 Follow on Facebook</a>
+  </div>
+  <div class="fade-right">
+    <div class="sec-label">Reservation</div>
+    <h2 class="sec-title">Send a <em>Request</em></h2>
+    <div class="amber-rule"></div>
+    <form onsubmit="handleForm(event)">
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="Sarah" required/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Murphy" required/></div>
+      </div>
+      <div class="form-group"><label>Phone</label><input type="tel" placeholder="(709) 000-0000"/></div>
+      <div class="form-row">
+        <div class="form-group"><label>Date</label><input type="date" required/></div>
+        <div class="form-group"><label>Party Size</label><select><option>Just Me</option><option>2 People</option><option>3-4 People</option><option>5-6 People</option><option>7+ Group</option></select></div>
+      </div>
+      <div class="form-group"><label>Special Requests</label><textarea placeholder="Dietary needs, occasion, seating preference..."></textarea></div>
+      <button type="submit" class="submit-btn">Confirm Reservation Request</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">Boreal <em>Café</em></div>
+      <p class="footer-desc">A warm, cozy corner on Water Street where artisan coffee, locally sourced food, and genuine Newfoundland hospitality come together every day.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Explore</div>
+      <ul class="footer-links">
+        <li><a href="#about">Our Story</a></li><li><a href="#products">Signature Drinks</a></li>
+        <li><a href="#menu">The Menu</a></li><li><a href="#gallery">Gallery</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Visit</div>
+      <ul class="footer-links">
+        <li><a href="#visit">Hours & Location</a></li><li><a href="#reserve">Reservations</a></li>
+        <li><a href="tel:7095524809">(709) 552-4809</a></li>
+        <li><a href="https://www.google.com/maps/dir/?api=1&destination=351+Water+St,+St+John%27s,+NL" target="_blank">Get Directions</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2024 Boreal Café · 351 Water St, St. John's NL · (709) 552-4809</p>
+    <div class="footer-socials">
+      <a class="soc" href="https://www.facebook.com/people/Boreal-Caf%C3%A9/61576568074726/" target="_blank">f</a>
+      <a class="soc" href="#">ig</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function animCursor(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animCursor);})();
+document.querySelectorAll('a,button,.m-card,.g-item,.feat,.review-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='22px';cursor.style.height='22px';ring.style.width='52px';ring.style.height='52px';});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='14px';cursor.style.height='14px';ring.style.width='36px';ring.style.height='36px';});
+});
+
+// ── NAV ──
+window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60));
+
+// ── HERO CANVAS — COFFEE POUR PARTICLES ──
+(function(){
+  const c=document.getElementById('hero-canvas'),ctx=c.getContext('2d');
+  function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+  resize(); window.addEventListener('resize',resize);
+  const drops=[];
+  for(let i=0;i<80;i++) drops.push({
+    x:Math.random()*window.innerWidth*.5+window.innerWidth*.45,
+    y:Math.random()*window.innerHeight,
+    r:Math.random()*3.5+1,
+    vx:(Math.random()-.5)*.35,vy:Math.random()*.55+.15,
+    a:Math.random()*.45+.08,
+    col:'rgba('+(30+Math.floor(Math.random()*20))+','+(12+Math.floor(Math.random()*10))+',4,'
+  });
+  // Pour stream particles
+  const stream=[];
+  for(let i=0;i<35;i++) stream.push({
+    x:window.innerWidth*.71+Math.random()*18-9,
+    y:Math.random()*window.innerHeight*.35,
+    r:Math.random()*5+2,vy:Math.random()*2.8+1.8,
+    a:Math.random()*.65+.2,wb:Math.random()*Math.PI*2
+  });
+  let t=0;
+  (function frame(){
+    requestAnimationFrame(frame); t+=.01;
+    ctx.clearRect(0,0,c.width,c.height);
+    // Pour stream
+    stream.forEach(p=>{
+      p.wb+=.035; p.y+=p.vy; p.x+=Math.sin(p.wb)*.6;
+      if(p.y>c.height*.88){p.y=c.height*.02;p.x=c.width*.71+Math.random()*18-9;p.a=Math.random()*.65+.2;}
+      const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*2.2);
+      g.addColorStop(0,'rgba(70,28,8,'+p.a+')');g.addColorStop(1,'rgba(18,8,2,0)');
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*2.2,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+    });
+    // Float drops
+    drops.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.y>c.height+8){p.y=-8;p.x=Math.random()*c.width*.5+c.width*.44;}
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.col+p.a+')';ctx.fill();
+    });
+  })();
+})();
+
+// ── SCROLL POUR CANVAS ──
+(function(){
+  const c=document.getElementById('pour-canvas'),ctx=c.getContext('2d');
+  function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+  resize(); window.addEventListener('resize',resize);
+  const pts=[]; let lastY=0;
+  window.addEventListener('scroll',()=>{
+    const dy=Math.abs(window.scrollY-lastY); lastY=window.scrollY;
+    if(dy>4){
+      const cnt=Math.min(10,Math.ceil(dy/6));
+      for(let i=0;i<cnt;i++){
+        const x=window.innerWidth*.3+Math.random()*window.innerWidth*.5;
+        const y=Math.random()*window.innerHeight*.6;
+        const speed=1.5+Math.random()*(dy>.25?4:2);
+        const ang=Math.random()*Math.PI*2;
+        pts.push({x,y,vx:Math.cos(ang)*speed,vy:Math.sin(ang)*speed+1.5,
+          r:Math.random()*7+3,a:.75,life:0,max:45+Math.random()*35,
+          col:`hsla(${15+Math.random()*22},${52+Math.random()*20}%,${16+Math.random()*16}%,`});
+      }
+    }
+    while(pts.length>140) pts.shift();
+  });
+  (function frame(){
+    requestAnimationFrame(frame);
+    ctx.clearRect(0,0,c.width,c.height);
+    for(let i=pts.length-1;i>=0;i--){
+      const p=pts[i]; p.life++;
+      const prog=p.life/p.max;
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.09; p.vx*=.96;
+      const a=prog<.2?prog*5*.65:(1-prog)*.65;
+      if(a>.01){
+        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+        g.addColorStop(0,p.col+a+')'); g.addColorStop(1,'rgba(18,8,2,0)');
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+      }
+      if(p.life>=p.max) pts.splice(i,1);
+    }
+  })();
+})();
+
+// ── BEANS CANVAS ──
+(function(){
+  const c=document.getElementById('beans-canvas'),ctx=c.getContext('2d');
+  function resize(){c.width=window.innerWidth;c.height=document.getElementById('beans-section').offsetHeight||window.innerHeight;}
+  resize(); window.addEventListener('resize',resize);
+  const beans=[];
+  for(let i=0;i<44;i++) beans.push({
+    x:Math.random()*window.innerWidth,y:Math.random()*700,
+    sz:Math.random()*22+10,rot:Math.random()*Math.PI*2,
+    rs:(Math.random()-.5)*.04,vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.28,
+    a:Math.random()*.55+.2,h:14+Math.random()*18,phase:Math.random()*Math.PI*2
+  });
+  let sf=0,t=0;
+  window.addEventListener('scroll',()=>{
+    const sec=document.getElementById('beans-section');
+    if(!sec)return;
+    const r=sec.getBoundingClientRect();
+    sf=Math.max(0,Math.min(1,-r.top/(r.height-window.innerHeight+1)));
+  });
+  function drawBean(x,y,w,h,rot,a,hue){
+    ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.globalAlpha=a;
+    const g=ctx.createRadialGradient(0,-h*.1,0,0,0,Math.max(w,h));
+    g.addColorStop(0,'hsl('+hue+',58%,26%)');g.addColorStop(.5,'hsl('+hue+',52%,16%)');g.addColorStop(1,'hsl('+hue+',42%,9%)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,0,w/2,h/2,0,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='hsla('+hue+',38%,7%,.65)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(0,-h*.38);ctx.bezierCurveTo(w*.14,-h*.1,w*.14,h*.1,0,h*.38);ctx.stroke();
+    ctx.restore();
+  }
+  (function frame(){
+    requestAnimationFrame(frame); t+=.007;
+    ctx.clearRect(0,0,c.width,c.height);
+    beans.forEach((b,i)=>{
+      b.rot+=b.rs*(1+sf*2.8);
+      b.x+=b.vx*(1+sf*1.8); b.y+=b.vy*(1+sf*1.8);
+      b.y+=Math.sin(t+b.phase)*.25; b.x+=Math.cos(t*.65+b.phase)*.18;
+      if(b.x<-60)b.x=c.width+60; if(b.x>c.width+60)b.x=-60;
+      if(b.y<-60)b.y=c.height+60; if(b.y>c.height+60)b.y=-60;
+      drawBean(b.x,b.y,b.sz*1.6,b.sz,b.rot,b.a*(0.45+sf*.55),b.h);
+    });
+  })();
+})();
+
+// ── PRODUCT SLIDER ──
+let curSlide=0;
+const slides=document.querySelectorAll('.product-slide');
+const dots=document.querySelectorAll('.slide-dot');
+const pbar=document.getElementById('prod-progress');
+let prog=0,timer;
+function goSlide(n){
+  slides[curSlide].classList.remove('active');dots[curSlide].classList.remove('active');
+  curSlide=(n+slides.length)%slides.length;
+  slides[curSlide].classList.add('active');dots[curSlide].classList.add('active');
+  prog=0;clearInterval(timer);startTimer();
+}
+function changeSlide(d){goSlide(curSlide+d);}
+function startTimer(){timer=setInterval(()=>{prog++;pbar.style.width=prog+'%';if(prog>=100)goSlide(curSlide+1);},50);}
+startTimer();
+
+// ── SCROLL REVEAL ──
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('show'),i*75);});
+},{threshold:.07});
+document.querySelectorAll('.fade-up,.fade-left,.fade-right,.fade-scale,.feat').forEach(el=>obs.observe(el));
+
+// ── MENU CARDS SLIDE-IN FROM LEFT ──
+const menuObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const cards=e.target.querySelectorAll('.m-card');
+      cards.forEach((c,i)=>setTimeout(()=>c.classList.add('show'),i*90));
+      menuObs.unobserve(e.target);
+    }
+  });
+},{threshold:.05});
+const mg=document.getElementById('menu-grid');if(mg)menuObs.observe(mg);
+
+// ── MENU FILTER ──
+function filterCat(cat,btn){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.m-card').forEach((card,i)=>{
+    if(cat==='all'||card.dataset.cat===cat){
+      card.style.display=''; card.classList.remove('show');
+      setTimeout(()=>card.classList.add('show'),i*80);
+    }else{
+      card.classList.remove('show');
+      setTimeout(()=>{card.style.display='none';},400);
+    }
+  });
+}
+
+// ── PARALLAX HERO ──
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY;
+  const cup=document.getElementById('hero-cup');
+  const bg=document.getElementById('hero-bg-img');
+  if(cup)cup.style.transform='translateY(calc(-50% + '+(sy*.28)+'px))';
+  if(bg)bg.style.transform='scale(1.08) translateY('+(sy*.14)+'px)';
+});
+document.addEventListener('mousemove',e=>{
+  const cup=document.getElementById('hero-cup');
+  if(!cup)return;
+  const xp=(e.clientX/window.innerWidth-.5),yp=(e.clientY/window.innerHeight-.5);
+  const sy=window.scrollY;
+  cup.style.transform='translateY(calc(-50% + '+(sy*.28)+'px + '+(yp*10)+'px)) translateX('+(xp*8)+'px)';
+});
+
+// ── CLICK POUR DROPS ──
+document.addEventListener('click',e=>{
+  const ov=document.getElementById('pour-overlay');
+  for(let i=0;i<8;i++){
+    const d=document.createElement('div'); d.className='pour-drop';
+    const s=Math.random()*22+10;
+    d.style.cssText='width:'+s+'px;height:'+s+'px;left:'+(e.clientX-s/2)+'px;top:'+(e.clientY-s/2)+'px;animation:pourDrop '+(0.4+Math.random()*.5)+'s ease-out forwards';
+    ov.appendChild(d); setTimeout(()=>d.remove(),1000);
+  }
+});
+
+// ── FORM ──
+function handleForm(e){
+  e.preventDefault();
+  const btn=e.target.querySelector('button');
+  btn.textContent="✓ Request Sent! We'll be in touch soon.";
+  btn.style.background='#4A7C59';
+  setTimeout(()=>{btn.textContent='Confirm Reservation Request';btn.style.background='';e.target.reset();},4000);
+}
+</script>
+</body>
+</html>
